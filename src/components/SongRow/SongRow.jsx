@@ -1,5 +1,6 @@
 import React from 'react';
 import { Avatar, Box, Typography, Grid, Skeleton } from '@mui/material';
+import { formatTime } from '../../utils/formatTime';
 
 const SongRow = ({ images, title, artist, album, duration, i, loading }) => {
 	const image = images?.length > 0 ? images[0] : null;
@@ -54,7 +55,7 @@ const SongRow = ({ images, title, artist, album, duration, i, loading }) => {
 					alignItems: 'center'
 				}}
 			>
-				{loading ? <Skeleton variant="text" width={50} height={14} /> : duration}
+				{loading ? <Skeleton variant="text" width={50} height={14} /> : formatTime(duration)}
 			</Grid>
 		</Grid>
 	);
