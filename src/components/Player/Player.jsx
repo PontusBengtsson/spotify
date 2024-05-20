@@ -1,13 +1,16 @@
 import { Box, Grid, Typography, Avatar } from '@mui/material';
 import { useEffect, useState } from 'react';
+import PlayerControls from '../PlayerControls/PlayerControls';
+import PlayerVolume from '../PlayerVolume/PlayerVolume';
 
 const Player = ({ spotifyApi, token }) => {
 	const [localPlayer, setLocalPlayer] = useState();
-	const [isPaused, setIsPaused] = useState(false);
+	const [is_paused, setIsPaused] = useState(false);
 	const [currentTrack, setCurrentTrack] = useState();
 	const [device, setDevice] = useState();
 	const [duration, setDuration] = useState();
 	const [progress, setProgress] = useState();
+	const [active, setActive] = useState();
 
 	useEffect(() => {
 		const script = document.createElement('script');
@@ -47,6 +50,10 @@ const Player = ({ spotifyApi, token }) => {
 				setProgress(progress);
 				setIsPaused(state.paused);
 				setCurrentTrack(state.track_window.current_track);
+
+				player.getCurrentState().then( state => { 
+					(!state)? setActive(false) : setActive(true) 
+				});
 			});
 
 			player.connect();
@@ -64,17 +71,17 @@ const Player = ({ spotifyApi, token }) => {
 		};
 	}, [localPlayer]);
 
-	useEffect(() => {
-		const transferPlayback = async () => {
-			if (device) {
-				const res = await spotifyApi.getMyDevices();
-				console.log(res);
-				await spotifyApi.transferMyPlayback([device], false);
-			}
-		};
+	// useEffect(() => {
+	// 	const transferPlayback = async () => {
+	// 		if (device) {
+	// 			const res = await spotifyApi.getMyDevices();
+	// 			console.log(res);
+	// 			await spotifyApi.transferMyPlayback([device], false);
+	// 		}
+	// 	};
 
-		transferPlayback();
-	}, [device, spotifyApi]);
+	// 	transferPlayback();
+	// }, [device, spotifyApi]);
 
 	return (
 		<Box>
@@ -108,10 +115,16 @@ const Player = ({ spotifyApi, token }) => {
 					sx={{ display: { xs: 'none', md: 'flex' }, justifyContent: 'center', alignItems: 'center' }}
 					md={4}
 				>
-					Playknappen
+					{active? <PlayerControls
+						progress={progress}
+						is_paused={is_paused}
+						duration={duration}
+						player={localPlayer}
+					/> : <Box>Please transfer playback</Box> }
+					
 				</Grid>
-				<Grid xs={6} md={4} item sx={{ display: 'flex', alignItems: 'center', justifyContent: 'flex-end' }}>
-					Volym
+				<Grid xs={6} md={4} item sx={{color: 'text.primary', display: 'flex', alignItems: 'center', justifyContent: 'flex-end' }}>
+				<PlayerVolume player={localPlayer}/>
 				</Grid>
 			</Grid>
 		</Box>
