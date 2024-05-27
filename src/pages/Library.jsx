@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { Box, List, Typography } from '@mui/material';
+import PlaylistItem from '../components/PlaylistItem/PlaylistItem';
 
 const Library = ({ spotifyApi, token }) => {
 	const [albumList, setAlbumList] = useState(null);
@@ -13,10 +14,17 @@ const Library = ({ spotifyApi, token }) => {
 
 			setLoading(false);
 			setAlbumList(data.body.items);
-			console.log(data.body.items);
 		}
 		getPlaylists();
 	}, [spotifyApi, token]);
+
+	const renderPlaylistItems = () => {
+		if (loading) {
+			return [1, 2, 3, 4, 5, 6, 7].map((_, i) => <PlaylistItem key={i} loading={loading} />);
+		}
+
+		return albumList.map((playlist, i) => <PlaylistItem key={i} {...playlist} loading={loading} />);
+	};
 
 	return (
 		<Box
@@ -33,7 +41,7 @@ const Library = ({ spotifyApi, token }) => {
 			<Typography py={3} variant="h2" fontWeight="bold" sx={{ color: 'text.primary', fontSize: 30 }}>
 				Ditt bibliotek
 			</Typography>
-			<List>{/* {PlaylistItems()} */}</List>
+			<List>{renderPlaylistItems()}</List>
 		</Box>
 	);
 };
