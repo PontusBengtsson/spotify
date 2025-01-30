@@ -23,7 +23,9 @@ const Home = () => {
 				{/* Ge användaren en chanse att kontakta dig! */}
 				Ansök nu!
 			</Button>
+			
 		</Box>
+		
 	);
 };
 
