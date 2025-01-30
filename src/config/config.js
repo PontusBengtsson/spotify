@@ -1,8 +1,10 @@
 export const authEndpoint = 'https://accounts.spotify.com/authorize';
 export const clientId = import.meta.env.VITE_CLIENT_ID;
-export const liveURL = import.meta.env.VITE_CLIENT_SECRET;
-export const devURL = 'https://localhost:5173';
+export const liveURL = import.meta.env.VITE_REDIRECT_URI; // Byt till korrekt variabel
+export const devURL = 'http://localhost:5173/callback'; // Ändrat till HTTP + "/callback"
 export const redirectURL = import.meta.env.PROD ? liveURL : devURL;
+
+// Spotify scopes
 export const scopes = [
 	'playlist-read-collaborative',
 	'playlist-modify-public',
@@ -25,6 +27,7 @@ export const scopes = [
 	'user-read-recently-played'
 ];
 
-export const accessUrl = `${authEndpoint}?client_id=${clientId}&redirect_uri=${redirectURL}&scope=${scopes.join(
-	'%20'
-)}&response_type=token&show_dialog=true`;
+// Skapa en URL-korrekt redirect_uri
+export const accessUrl = `${authEndpoint}?client_id=${clientId}&redirect_uri=${encodeURIComponent(
+	redirectURL
+)}&scope=${encodeURIComponent(scopes.join(' '))}&response_type=token&show_dialog=true`;
